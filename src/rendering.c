@@ -1,5 +1,7 @@
 #include "rendering.h"
 
+#if !EMBEDDED_MODE
+
 #include <SDL2/SDL.h>
 
 static SDL_Window *window;
@@ -72,3 +74,77 @@ void draw_column(int x, int draw_start, int draw_end, bool is_corner)
 
     }
 }
+
+#else // if EMBEDDED_MODE
+
+#include "gpio.h"
+#include "graphics_display.h"
+#include "graphics.h"
+#include "timer.h"
+
+GraphicsDisplay display;
+Framebuffer framebuffer;
+
+void screen_setup()
+{
+    // Initialize the timer (only required for the display)
+    timer_init();
+
+    GPIO *gpio_e = gpio_create(GPIO_E);
+    display = graphics_display_create(gpio_e);
+    graphics_display_clear(&display);
+    framebuffer_clear(&framebuffer);
+}
+
+void screen_clear()
+{
+    framebuffer_clear(&framebuffer);
+}
+
+void screen_push_rendered()
+{
+    graphics_display_push_framebuffer(&display, &framebuffer);
+}
+
+void draw_column(int x, int draw_start, int draw_end, bool is_corner)
+{
+    if (draw_start > draw_end)
+    {
+        return;
+    }
+
+    if (draw_start >= 0 && draw_start < SCREEN_HEIGHT) framebuffer_set_pixel(&framebuffer, x, draw_start, 1);
+    if (draw_end >= 0 && draw_end < SCREEN_HEIGHT) framebuffer_set_pixel(&framebuffer, x, draw_end, 1);
+
+    if (is_corner)
+    {
+        int ds = (draw_start < 0) ? 0 : draw_start;
+        int de = (draw_start >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - 1 : draw_end;
+        for (int y = ds; y < de; y += 1)
+        {
+            framebuffer_set_pixel(&framebuffer, x, y, 1);
+        }
+    }
+
+    for (int y = draw_start; y < draw_end; y += 1)
+    {
+        if (y < draw_start + ((draw_end - draw_start) / 7))
+        {
+            if (y >= 0 && y < SCREEN_HEIGHT)
+            {
+                framebuffer_set_pixel(&framebuffer, x, y, 1);
+            }
+        }
+
+        if (y > draw_start + ((6 * (draw_end - draw_start)) / 7.0f))
+        {
+            if (y >= 0 && y < SCREEN_HEIGHT)
+            {
+                framebuffer_set_pixel(&framebuffer, x, y, 1);
+            }
+        }
+
+    }
+}
+
+#endif

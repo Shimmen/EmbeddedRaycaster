@@ -10,5 +10,6 @@ typedef struct map {
 int get_tile(const Map *map, int x, int y);
 
 extern const Map default_map;
+extern const Map line_map;
 
 #endif // MAP_H_

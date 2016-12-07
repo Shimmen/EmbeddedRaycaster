@@ -1,8 +1,15 @@
 #include "input.h"
 
+#if !EMBEDDED_MODE
+
 #include <stdbool.h>
 
 #include <SDL2/SDL.h>
+
+void input_init(InputData *input_data)
+{
+    // Do nothing...
+}
 
 void get_input(InputData *input_data)
 {
@@ -32,3 +39,49 @@ void get_input(InputData *input_data)
         }
     }
 }
+
+#else // if EMBEDDED_MODE
+
+#include <stdint.h>
+
+#include "gpio.h"
+#include "keypad.h"
+
+GPIO *gpio_d;
+Keypad keypad;
+
+void input_init(InputData *input_data)
+{
+    gpio_d = gpio_create(GPIO_D);
+    keypad = keypad_create(gpio_d, GPIO_SECTION_HIGH, false);
+}
+
+void get_input(InputData *input_data)
+{
+    uint8_t key = keypad_get(&keypad);
+    switch (key) {
+
+        case 2:
+            input_data->y_axis = 1;
+            break;
+
+        case 5:
+            input_data->y_axis = -1;
+            break;
+
+        case 4:
+            input_data->x_axis = -1;
+            break;
+
+        case 6:
+            input_data->x_axis = 1;
+            break;
+
+        case 0xFF:
+        default:
+            input_data->y_axis = 0;
+            input_data->x_axis = 0;
+    }
+}
+
+#endif

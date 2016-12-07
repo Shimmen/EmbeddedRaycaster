@@ -1,14 +1,32 @@
 
-// TODO: Check which ones are available on the MD407
 #include <math.h>
-#include <stdio.h>
 #include <stdbool.h>
 
 #include "map.h"
 #include "input.h"
-#include "timing.h"
+#include "config.h"
 #include "raycast.h"
 #include "rendering.h"
+
+//#include "timer.h"
+
+#if !EMBEDDED_MODE
+ // timing.h only for when running on a PC. Embedded mode is predictable enough to hard-code a timing value
+ #include "timing.h"
+#endif
+
+#if EMBEDDED_MODE
+void startup() __attribute__((naked)) __attribute__((section (".start_section")));
+void startup()
+{
+    asm volatile(
+        " LDR R0,=0x2001C000\n" /* set stack */
+        " MOV SP,R0\n"
+        " BL main\n"            /* call main */
+        ".L1: B .L1\n"          /* never return */
+    );
+}
+#endif
 
 int main()
 {
@@ -21,19 +39,23 @@ int main()
 
     const Map *map = &default_map;
     InputData input_data = { 0, 0, 0 };
+    input_init(&input_data);
 
-    unsigned int accumulated_frame_time = 0;
-    unsigned int frame_count = 0;
-
+#if !EMBEDDED_MODE
     unsigned int frame_time = 0;
     unsigned int current_time = get_current_time();
     unsigned int last_time = current_time;
+#endif
 
     while(!input_data.should_exit)
     {
+#if !EMBEDDED_MODE
         frame_time = current_time - last_time;
         last_time = current_time;
         current_time = get_current_time();
+#else
+        const unsigned int frame_time = 30;
+#endif
 
         // Camera movement & rotation
         {
@@ -74,18 +96,5 @@ int main()
         }
 
         screen_push_rendered();
-
-        // Logging
-        frame_count += 1;
-        accumulated_frame_time += frame_time;
-        if (accumulated_frame_time > 1000)
-        {
-            float average_frame_time = (float)accumulated_frame_time / (float)frame_count;
-            int rounded_frame_time = (int)(average_frame_time + 0.5f);
-            int fps = (int) (1000.0f / average_frame_time);
-            printf("Frame time: %dms, FPS: %d\n", rounded_frame_time, fps);
-            accumulated_frame_time -= 1000;
-            frame_count = 0;
-        }
     }
 }

@@ -7,6 +7,7 @@ typedef struct input_data {
     int should_exit;
 } InputData;
 
+void input_init(InputData *input_data);
 void get_input(InputData *input_data);
 
 #endif // INPUT_H_

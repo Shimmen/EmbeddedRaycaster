@@ -119,13 +119,16 @@ RayHit perform_raycast(const Map *map, Ray ray)
     else           perp_wall_dist = (mapY - ray.pos.y + (1 - step_y) / 2) / ray.dir.y;
 
     // Calculate height of line to draw on screen
-    int line_height = (int)(SCREEN_HEIGHT / perp_wall_dist);
+    double line_height = SCREEN_HEIGHT / perp_wall_dist;
 
     RayHit ray_hit;
 
+    // Change "grid size" by changing this variable
+    //line_height = line_height * 0.8;
+
     // Calculate lowest and highest pixel to fill in current stripe
-    ray_hit.wall_bottom = -line_height / 2 + SCREEN_HEIGHT / 2;
-    ray_hit.wall_top = line_height / 2 + SCREEN_HEIGHT / 2;
+    ray_hit.wall_bottom = (int)(-line_height / 2 + SCREEN_HEIGHT / 2);
+    ray_hit.wall_top = (int)(line_height / 2 + SCREEN_HEIGHT / 2);
 
     return ray_hit;
 }
