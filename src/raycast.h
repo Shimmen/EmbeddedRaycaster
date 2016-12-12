@@ -1,14 +1,8 @@
 #ifndef RAYCAST_H_
 #define RAYCAST_H_
 
+#include "math.h"
 #include "map.h"
-
-typedef struct vec2 {
-    float x;
-    float y;
-} Vec2;
-
-Vec2 vec2(float x, float y);
 
 typedef struct camera {
     Vec2 pos;

@@ -40,7 +40,10 @@ static int default_map_tiles[MAP_WIDTH * MAP_HEIGHT] =
 const Map default_map = {
         MAP_WIDTH,
         MAP_HEIGHT,
-        &default_map_tiles[0]
+        &default_map_tiles[0],
+        {22, 12},
+        {-1, 0},
+        {0.0f, 0.66f}
 };
 
 static int line_map_tiles[72 * 8] =
@@ -58,5 +61,8 @@ static int line_map_tiles[72 * 8] =
 const Map line_map = {
         72,
         8,
-        &line_map_tiles[0]
+        &line_map_tiles[0],
+        {3, 3},
+        {-1, 0},
+        {0.0f, 0.66f}
 };

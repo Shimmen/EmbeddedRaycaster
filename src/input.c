@@ -22,6 +22,12 @@ void get_input(InputData *input_data)
             return;
         }
 
+        if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_r)
+        {
+            // Must be reset when read!
+            input_data->should_teleport = true;
+        }
+
         if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
         {
             int val = (event.type == SDL_KEYDOWN) ? 1 : 0;
@@ -75,6 +81,11 @@ void get_input(InputData *input_data)
 
         case 6:
             input_data->x_axis = 1;
+            break;
+
+        case 10:
+            // Must be reset when read!
+            input_data->should_teleport = true;
             break;
 
         case 0xFF:

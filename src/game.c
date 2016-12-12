@@ -28,18 +28,23 @@ void startup()
 }
 #endif
 
+void init_camera_for_map(Camera *camera, const Map *map)
+{
+    camera->pos = map->start_pos;
+    camera->dir = map->start_dir;
+    camera->plane = map->start_camera_plane;
+}
+
 int main()
 {
-    Camera camera;
-    camera.pos = vec2(22, 12);
-    camera.dir = vec2(-1, 0);
-    camera.plane = vec2(0.0f, 0.66f);
-
     screen_setup();
 
     const Map *map = &default_map;
-    InputData input_data = { 0, 0, 0 };
+    InputData input_data = { 0, 0, 0, 0, 0, 0, false, false };
     input_init(&input_data);
+
+    Camera camera;
+    init_camera_for_map(&camera, map);
 
 #if !EMBEDDED_MODE
     unsigned int frame_time = 0;
@@ -83,6 +88,14 @@ int main()
             float old_plane_x = camera.plane.x;
             camera.plane.x = camera.plane.x * cosf(-rot_speed) - camera.plane.y * sinf(-rot_speed);
             camera.plane.y = old_plane_x * sinf(-rot_speed) + camera.plane.y * cosf(-rot_speed);
+
+            if (input_data.should_teleport)
+            {
+                input_data.should_teleport = false;
+                // TODO: Check if in range for teleport, and add logic for choosing map!
+                map = &line_map;
+                init_camera_for_map(&camera, map);
+            }
         }
 
         screen_clear();

@@ -4,14 +4,6 @@
 
 #include "rendering.h"
 
-inline Vec2 vec2(float x, float y)
-{
-    Vec2 v;
-    v.x = x;
-    v.y = y;
-    return v;
-}
-
 Ray get_ray_from_camera(Camera camera, int x_row, int window_width)
 {
     Ray ray;
