@@ -12,6 +12,7 @@ int get_tile(const Map *map, int x, int y)
 
 #define MAP_WIDTH 24
 #define MAP_HEIGHT 21
+
 static int default_map_tiles[MAP_WIDTH * MAP_HEIGHT] =
 {
     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -66,3 +67,17 @@ const Map line_map = {
         {-1, 0},
         {0.0f, 0.66f}
 };
+
+void debug_print_map(Map *map) {
+    for (int y = 0; y < map->height; y++) {
+        for (int x = 0; x < map->width; x++) {
+            if (get_tile(map, x, y) == GOAL)
+                printf("X");
+            else if (get_tile(map, x, y) == EMPTY)
+                printf(" ");
+            else
+                printf("#");
+        }
+        printf("\n");
+    }
+}

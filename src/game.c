@@ -7,6 +7,7 @@
 #include "config.h"
 #include "raycast.h"
 #include "rendering.h"
+#include "maze_generator.h"
 
 //#include "timer.h"
 
@@ -35,11 +36,14 @@ void init_camera_for_map(Camera *camera, const Map *map)
     camera->plane = map->start_camera_plane;
 }
 
-int main()
+int main(int argc, char* args[])
 {
     screen_setup();
 
-    const Map *map = &default_map;
+    //const Map *map = &default_map;
+    Map maze  = random_maze(default_map.tiles,15,17);
+    const Map *map = &maze;
+    debug_print_map(map);
     InputData input_data = { 0, 0, 0, 0, 0, 0, false, false };
     input_init(&input_data);
 
