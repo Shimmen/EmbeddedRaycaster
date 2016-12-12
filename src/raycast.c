@@ -54,6 +54,7 @@ RayHit perform_raycast(const Map *map, Ray ray)
     // Which box of the map we're in
     int mapX = (int)ray.pos.x;
     int mapY = (int)ray.pos.y;
+    int wall_type = 0;
 
     // Length of ray from current position to next x or y-side
     double side_dist_x;
@@ -111,7 +112,8 @@ RayHit perform_raycast(const Map *map, Ray ray)
         }
 
         // Check if ray has hit a wall
-        if (get_tile(map, mapX, mapY) > 0) hit = 1;
+        wall_type = get_tile(map, mapX, mapY);
+        if (wall_type > 0) hit = 1;
     }
 
     // Calculate distance projected on camera direction (oblique distance will give fisheye effect!)
@@ -122,6 +124,7 @@ RayHit perform_raycast(const Map *map, Ray ray)
     double line_height = SCREEN_HEIGHT / perp_wall_dist;
 
     RayHit ray_hit;
+    ray_hit.wall_type = wall_type;
 
     // Change "grid size" by changing this variable
     //line_height = line_height * 0.8;

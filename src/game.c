@@ -92,7 +92,7 @@ int main()
         {
             Ray ray = get_ray_from_camera(camera, x, SCREEN_WIDTH);
             RayHit ray_hit = perform_raycast(map, ray);
-            draw_column(x, ray_hit.wall_bottom, ray_hit.wall_top, false);
+            draw_column(x, ray_hit.wall_bottom, ray_hit.wall_top, ray_hit.wall_type == 2);
         }
 
         screen_push_rendered();

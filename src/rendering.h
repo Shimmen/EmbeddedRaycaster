@@ -10,6 +10,6 @@ void screen_setup();
 void screen_clear();
 void screen_push_rendered();
 
-void draw_column(int x, int draw_start, int draw_end, bool is_corner);
+void draw_column(int x, int draw_start, int draw_end, bool fill_column);
 
 #endif // RENDERING_H_

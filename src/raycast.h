@@ -29,6 +29,7 @@ Ray get_ray_from_camera(Camera camera, int x_row, int window_width);
 typedef struct {
     int wall_bottom;
     int wall_top;
+    int wall_type;
 } RayHit;
 
 //

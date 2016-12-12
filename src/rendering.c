@@ -32,7 +32,7 @@ void screen_push_rendered()
     SDL_Delay(1);
 }
 
-void draw_column(int x, int draw_start, int draw_end, bool is_corner)
+void draw_column(int x, int draw_start, int draw_end, bool fill_column)
 {
     if (draw_start > draw_end)
     {
@@ -44,34 +44,30 @@ void draw_column(int x, int draw_start, int draw_end, bool is_corner)
     if (draw_start >= 0 && draw_start < SCREEN_HEIGHT) SDL_RenderDrawPoint(renderer, x, draw_start);
     if (draw_end >= 0 && draw_end < SCREEN_HEIGHT) SDL_RenderDrawPoint(renderer, x, draw_end);
 
-    if (is_corner)
+    for (int y = draw_start; y < draw_end; y += 1)
     {
-        int ds = (draw_start < 0) ? 0 : draw_start;
-        int de = (draw_start >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - 1 : draw_end;
-        for (int y = ds; y < de; y += 1)
+        if (fill_column)
         {
             SDL_RenderDrawPoint(renderer, x, y);
         }
-    }
-
-    for (int y = draw_start; y < draw_end; y += 1)
-    {
-        if (y < draw_start + ((draw_end - draw_start) / 7))
+        else
         {
-            if (y >= 0 && y < SCREEN_HEIGHT)
+            if (y < draw_start + ((draw_end - draw_start) / 7.0f))
             {
-                SDL_RenderDrawPoint(renderer, x, y);
+                if (y >= 0 && y < SCREEN_HEIGHT)
+                {
+                    SDL_RenderDrawPoint(renderer, x, y);
+                }
+            }
+
+            if (y > draw_start + ((6 * (draw_end - draw_start)) / 7.0f))
+            {
+                if (y >= 0 && y < SCREEN_HEIGHT)
+                {
+                    SDL_RenderDrawPoint(renderer, x, y);
+                }
             }
         }
-
-        if (y > draw_start + ((6 * (draw_end - draw_start)) / 7.0f))
-        {
-            if (y >= 0 && y < SCREEN_HEIGHT)
-            {
-                SDL_RenderDrawPoint(renderer, x, y);
-            }
-        }
-
     }
 }
 
@@ -106,7 +102,7 @@ void screen_push_rendered()
     graphics_display_push_framebuffer(&display, &framebuffer);
 }
 
-void draw_column(int x, int draw_start, int draw_end, bool is_corner)
+void draw_column(int x, int draw_start, int draw_end, bool fill_column)
 {
     if (draw_start > draw_end)
     {
@@ -116,34 +112,30 @@ void draw_column(int x, int draw_start, int draw_end, bool is_corner)
     if (draw_start >= 0 && draw_start < SCREEN_HEIGHT) framebuffer_set_pixel(&framebuffer, x, draw_start, 1);
     if (draw_end >= 0 && draw_end < SCREEN_HEIGHT) framebuffer_set_pixel(&framebuffer, x, draw_end, 1);
 
-    if (is_corner)
+    for (int y = draw_start; y < draw_end; y += 1)
     {
-        int ds = (draw_start < 0) ? 0 : draw_start;
-        int de = (draw_start >= SCREEN_HEIGHT) ? SCREEN_HEIGHT - 1 : draw_end;
-        for (int y = ds; y < de; y += 1)
+        if (fill_column)
         {
             framebuffer_set_pixel(&framebuffer, x, y, 1);
         }
-    }
-
-    for (int y = draw_start; y < draw_end; y += 1)
-    {
-        if (y < draw_start + ((draw_end - draw_start) / 7))
+        else
         {
-            if (y >= 0 && y < SCREEN_HEIGHT)
+            if (y < draw_start + ((draw_end - draw_start) / 7))
             {
-                framebuffer_set_pixel(&framebuffer, x, y, 1);
+                if (y >= 0 && y < SCREEN_HEIGHT)
+                {
+                    framebuffer_set_pixel(&framebuffer, x, y, 1);
+                }
+            }
+
+            if (y > draw_start + ((6 * (draw_end - draw_start)) / 7.0f))
+            {
+                if (y >= 0 && y < SCREEN_HEIGHT)
+                {
+                    framebuffer_set_pixel(&framebuffer, x, y, 1);
+                }
             }
         }
-
-        if (y > draw_start + ((6 * (draw_end - draw_start)) / 7.0f))
-        {
-            if (y >= 0 && y < SCREEN_HEIGHT)
-            {
-                framebuffer_set_pixel(&framebuffer, x, y, 1);
-            }
-        }
-
     }
 }
 
